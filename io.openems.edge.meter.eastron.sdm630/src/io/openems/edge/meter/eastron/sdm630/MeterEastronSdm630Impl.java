@@ -113,15 +113,15 @@ public class MeterEastronSdm630Impl extends AbstractOpenemsModbusComponent
 						m(AsymmetricMeter.ChannelId.CURRENT_L1,
 								new FloatDoublewordElement(30007 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.SCALE_FACTOR_3_AND_INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.SCALE_FACTOR_3),
 						m(AsymmetricMeter.ChannelId.CURRENT_L2,
 								new FloatDoublewordElement(30009 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.SCALE_FACTOR_3_AND_INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.SCALE_FACTOR_3),
 						m(AsymmetricMeter.ChannelId.CURRENT_L3,
 								new FloatDoublewordElement(30011 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.SCALE_FACTOR_3_AND_INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.SCALE_FACTOR_3),
 
 						// Active Power
 						m(AsymmetricMeter.ChannelId.ACTIVE_POWER_L1,
@@ -172,7 +172,7 @@ public class MeterEastronSdm630Impl extends AbstractOpenemsModbusComponent
 						m(SymmetricMeter.ChannelId.CURRENT,
 								new FloatDoublewordElement(30049 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.SCALE_FACTOR_3_AND_INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.SCALE_FACTOR_3),
 						// Sum of line currents (merge with above?)
 						new DummyRegisterElement(30051 - offset, 30052 - offset),
 
