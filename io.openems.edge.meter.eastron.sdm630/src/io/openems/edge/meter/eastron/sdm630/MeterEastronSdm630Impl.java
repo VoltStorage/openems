@@ -1,7 +1,6 @@
 package io.openems.edge.meter.eastron.sdm630;
 
 import java.nio.ByteOrder;
-import java.util.function.Consumer;
 
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
@@ -30,11 +29,8 @@ import io.openems.edge.bridge.modbus.api.task.FC4ReadInputRegistersTask;
 
 import io.openems.edge.common.modbusslave.ModbusSlave;
 import io.openems.edge.common.modbusslave.ModbusSlaveTable;
-import io.openems.edge.common.channel.IntegerReadChannel;
-import io.openems.edge.common.channel.value.Value;
 import io.openems.edge.common.component.OpenemsComponent;
 import io.openems.edge.common.taskmanager.Priority;
-import io.openems.edge.common.type.TypeUtils;
 
 import io.openems.edge.meter.api.AsymmetricMeter;
 import io.openems.edge.meter.api.MeterType;
@@ -131,43 +127,43 @@ public class MeterEastronSdm630Impl extends AbstractOpenemsModbusComponent
 						m(AsymmetricMeter.ChannelId.ACTIVE_POWER_L1,
 								new FloatDoublewordElement(30013 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						m(AsymmetricMeter.ChannelId.ACTIVE_POWER_L2,
 								new FloatDoublewordElement(30015 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						m(AsymmetricMeter.ChannelId.ACTIVE_POWER_L3,
 								new FloatDoublewordElement(30017 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 
 						// Volt Amps (Apparent Power)
 						m(MeterEastronSdm630.ChannelId.APPARENT_POWER_L1,
 								new FloatDoublewordElement(30019 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						m(MeterEastronSdm630.ChannelId.APPARENT_POWER_L2,
 								new FloatDoublewordElement(30021 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						m(MeterEastronSdm630.ChannelId.APPARENT_POWER_L3,
 								new FloatDoublewordElement(30023 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 
 						// Volt Amps Reactive (Reactive Power)
 						m(AsymmetricMeter.ChannelId.REACTIVE_POWER_L1,
 								new FloatDoublewordElement(30025 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						m(AsymmetricMeter.ChannelId.REACTIVE_POWER_L2,
 								new FloatDoublewordElement(30027 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						m(AsymmetricMeter.ChannelId.REACTIVE_POWER_L3,
 								new FloatDoublewordElement(30029 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 
 						// Power factor, phase angel and other information
 						new DummyRegisterElement(30031 - offset, 30048 - offset),
@@ -184,7 +180,7 @@ public class MeterEastronSdm630Impl extends AbstractOpenemsModbusComponent
 						m(SymmetricMeter.ChannelId.ACTIVE_POWER,
 								new FloatDoublewordElement(30053 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						// Sum of active power (merge with above?)
 						new DummyRegisterElement(30055 - offset, 30060 - offset),
 
@@ -192,7 +188,7 @@ public class MeterEastronSdm630Impl extends AbstractOpenemsModbusComponent
 						m(SymmetricMeter.ChannelId.REACTIVE_POWER,
 								new FloatDoublewordElement(30061 - offset).wordOrder(WordOrder.MSWLSW)
 										.byteOrder(ByteOrder.BIG_ENDIAN),
-								ElementToChannelConverter.INVERT_IF_TRUE(this.config.invert())),
+								ElementToChannelConverter.DIRECT_1_TO_1),
 						// Sum of reactive power (merge with above?)
 						new DummyRegisterElement(30063 - offset, 30070 - offset),
 
