@@ -2,12 +2,25 @@ plugins {
 	id 'java'
 	id 'biz.aQute.bnd.workspace'
 	id 'com.github.node-gradle.node'
+	id 'jacoco'
+}
+
+task jacocoRootReport(type: JacocoReport) {
+	dependsOn 'test'
+
+	subprojects.each {
+		sourceSets it.sourceSets.main
+	}
+
+	executionData.from fileTree(project.rootDir.absolutePath).include("**/generated/jacoco/*.exec")
 }
 
 /*
  * disable report generation
  */
 allprojects {
+	apply plugin:'jacoco'
+
 	repositories {
 		mavenCentral()
 		gradlePluginPortal()
