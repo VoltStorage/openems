@@ -33,6 +33,11 @@ public class MeterEastronSdm630ImplTest {
 
   @RunWith(Parameterized.class)
   public static class EnergyAndPowerAndCurrentInversionTest {
+
+    /**
+     * Build given, when, then matrix.
+     * @return the given, when, then matrix.
+     */
     @Parameterized.Parameters(name = "Test {index}: isWiringDirectionReversed={0}, meterType:{1} -> shouldInvertEnergy={2}, shouldInvertPowerAndCurrent={3}")
     public static Collection<Object[]> data() {
       return Arrays.asList(new Object[][] {
@@ -74,12 +79,12 @@ public class MeterEastronSdm630ImplTest {
       ComponentTest activate = new ComponentTest(new MeterEastronSdm630Impl()) //
           .addReference("cm", new DummyConfigurationAdmin()) //
           .addReference("setModbus", new DummyModbusBridge(MODBUS_ID)) //
-          .activate(myConfig);//
+          .activate(this.myConfig);//
       MeterEastronSdm630Impl meter = (MeterEastronSdm630Impl) activate.getSut();
 
       String testCase =
           " given isWiringDirectionReversed=" + this.myConfig.isWiringDirectionReversed() + " and meterType=" + this.myConfig.type();
-      assertEquals("expect shouldInvertEnergy=" + shouldInvertEnergy + testCase, this.shouldInvertEnergy, meter.shouldInvertEnergy());
+      assertEquals("expect shouldInvertEnergy=" + this.shouldInvertEnergy + testCase, this.shouldInvertEnergy, meter.shouldInvertEnergy());
       assertEquals("expect shouldInvertPowerAndCurrent=" + this.shouldInvertPowerAndCurrent + testCase, this.shouldInvertPowerAndCurrent,
           meter.shouldInvertPowerAndCurrent());
     }
