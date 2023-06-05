@@ -179,7 +179,7 @@ public class MeterEastronSdm630Impl extends AbstractOpenemsModbusComponent imple
             m(SymmetricMeter.ChannelId.FREQUENCY,
                 new FloatDoublewordElement(30071 - offset).wordOrder(WordOrder.MSWLSW)
                     .byteOrder(ByteOrder.BIG_ENDIAN),
-                ElementToChannelConverter.DIRECT_1_TO_1),
+                ElementToChannelConverter.SCALE_FACTOR_3),
 
             // Energy
             m(this.shouldInvertEnergy()
