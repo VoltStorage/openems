@@ -85,32 +85,12 @@ public class MeterEastronSdm630Impl extends AbstractOpenemsModbusComponent imple
     return this.meterType;
   }
 
-  private boolean connectedComponentIsProvidingLoad() {
-    // see 7. Wiring Diagram in "Series Manual".pdf for layout and connection of incoming/outgoing wires.
-    // If the EMS is connected at the bottom and the component which is measured is connected at the top of the meter,
-    // this meter is measuring a component which is providing load for the EMS / into the system.
-    // If the EMS is connected at the top and the component at the bottom of the meter,
-    // the meter is measuring a component which is consuming load from the EMS / out of the system.
-    return switch (this.meterType) {
-      case GRID, PRODUCTION, PRODUCTION_AND_CONSUMPTION -> true;
-      default -> false;
-    };
-  }
-
   boolean shouldInvertPowerAndCurrent() {
-    if (this.isWiringDirectionReversed) {
-      return this.connectedComponentIsProvidingLoad();
-    } else {
-      return !this.connectedComponentIsProvidingLoad();
-    }
+    return this.isWiringDirectionReversed;
   }
 
   boolean shouldInvertEnergy() {
-    if (this.isWiringDirectionReversed) {
-      return this.connectedComponentIsProvidingLoad();
-    } else {
-      return !this.connectedComponentIsProvidingLoad();
-    }
+    return this.isWiringDirectionReversed;
   }
 
   @Override

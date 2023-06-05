@@ -39,13 +39,13 @@ public class MeterEastronSdm630ImplTest {
           // isWiringDirectionReversed, MeterType, expect: shouldInvertEnergy, expect: shouldInvertPowerAndCurrent
           {false, MeterType.GRID, false, false},
           {false, MeterType.PRODUCTION, false, false},
-          {false, MeterType.CONSUMPTION_METERED, true, true},
-          {false, MeterType.CONSUMPTION_NOT_METERED, true, true},
+          {false, MeterType.CONSUMPTION_METERED, false, false},
+          {false, MeterType.CONSUMPTION_NOT_METERED, false, false},
           //
           {true, MeterType.GRID, true, true},
           {true, MeterType.PRODUCTION, true, true},
-          {true, MeterType.CONSUMPTION_METERED, false, false},
-          {true, MeterType.CONSUMPTION_NOT_METERED, false, false},
+          {true, MeterType.CONSUMPTION_METERED, true, true},
+          {true, MeterType.CONSUMPTION_NOT_METERED, true, true},
       });
     }
 
