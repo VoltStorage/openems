@@ -1,0 +1,24 @@
+###
+
+# curl -X POST http://localhost:8080/auth/realms/test/protocol/openid-connect/token
+# --data "username=admin"
+# --data "password=password"
+# --data "client_id=my-test-client"
+# --data "grant_type=password"
+POST http://localhost:8080/realms/voltstorage-customers/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+username=phfeustel@gmx.com&password=super-secure&client_id=openems&grant_type=password
+
+<> 2023-07-09T180348.200.json
+<> 2023-07-09T180340.401.json
+<> 2023-07-07T102524.200.json
+<> 2023-07-07T102157.401.json
+<> 2023-07-07T102145.401.json
+<> 2023-07-07T102135.401.json
+<> 2023-07-07T102002.401.json
+<> 2023-07-07T101925.404.json
+<> 2023-07-07T101913.404.json
+
+###
+

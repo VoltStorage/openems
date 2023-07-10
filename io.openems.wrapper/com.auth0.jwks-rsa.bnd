@@ -1,0 +1,20 @@
+Bundle-Name: auth0-jwks-rsa
+Bundle-Description: The Java Auth0 JWKS RSA
+Bundle-DocURL: ..
+Bundle-License: ...
+Bundle-Version: 0.22.0
+
+Include-Resource: \
+	@jwks-rsa-0.22.0.jar,\
+
+Export-Package: \
+    com.auth0.jwk,\
+
+Import-Package: \
+	*
+	
+-dsannotations: *
+
+-metatypeannotations: *
+
+-sources: false

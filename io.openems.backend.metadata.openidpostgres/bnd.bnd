@@ -1,0 +1,17 @@
+Bundle-Name: OpenEMS Backend Metadata OpenId Postgres
+Bundle-Vendor: VoltStorage GmbH
+Bundle-License: https://opensource.org/licenses/EPL-2.0
+Bundle-Version: 1.0.0.${tstamp}
+
+-buildpath: \
+	${buildpath},\
+	io.openems.backend.common,\
+	io.openems.common, \
+	io.openems.wrapper.com.auth0.java-jwt, \
+    io.openems.wrapper.com.auth0.jwks-rsa, \
+    com.fasterxml.jackson.core.jackson-core;version=2.14.2, \
+    com.fasterxml.jackson.core.jackson-databind;version=2.14.2, \
+    com.fasterxml.jackson.core.jackson-annotations;version=2.14.2, \
+
+-testpath: \
+	${testpath}

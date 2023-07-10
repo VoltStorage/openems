@@ -1,0 +1,25 @@
+Bundle-Name: auth0-java-jwt
+Bundle-Description: The Java Auth0 JWT
+Bundle-DocURL: ..
+Bundle-License: ...
+Bundle-Version: 4.4.0
+
+Include-Resource: \
+	@java-jwt-4.4.0.jar,\
+
+Export-Package: \
+	com.auth0.jwt,\
+    com.auth0.jwt.algorithms,\
+    com.auth0.jwt.exceptions,\
+    com.auth0.jwt.interfaces,\
+
+Import-Package: \
+	*
+
+-dsannotations: *
+
+-metatypeannotations: *
+
+-sources: false
+
+-fixupmessages "Classes found in the wrong directory"; restrict:=error; is:=warning

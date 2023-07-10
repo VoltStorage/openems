@@ -10,7 +10,7 @@
 
 -runproperties: \
 	org.osgi.service.http.port=8079,\
-	felix.cm.dir=c:/openems-backend/config,\
+	felix.cm.dir=/Users/phfeustel/workspace/voltstorage/github-openems/backend-config,\
 	openems.data.dir=c:/openems-backend/data,\
 	org.apache.felix.eventadmin.Timeout=0,\
 	org.ops4j.pax.logging.DefaultServiceLog.level=INFO
@@ -51,6 +51,7 @@
 	bnd.identity;id='io.openems.backend.metadata.dummy',\
 	bnd.identity;id='io.openems.backend.metadata.file',\
 	bnd.identity;id='io.openems.backend.metadata.odoo',\
+	bnd.identity;id='io.openems.backend.metadata.openidpostgres',\
 	bnd.identity;id='io.openems.backend.timedata.dummy',\
 	bnd.identity;id='io.openems.backend.timedata.influx',\
 	bnd.identity;id='io.openems.backend.timedata.timescaledb',\
@@ -74,12 +75,15 @@
 	io.openems.backend.metadata.dummy;version=snapshot,\
 	io.openems.backend.metadata.file;version=snapshot,\
 	io.openems.backend.metadata.odoo;version=snapshot,\
+	io.openems.backend.metadata.openidpostgres;version=snapshot,\
 	io.openems.backend.timedata.dummy;version=snapshot,\
 	io.openems.backend.timedata.influx;version=snapshot,\
 	io.openems.backend.timedata.timescaledb;version=snapshot,\
 	io.openems.backend.uiwebsocket;version=snapshot,\
 	io.openems.common;version=snapshot,\
 	io.openems.shared.influxdb;version=snapshot,\
+	io.openems.wrapper.com.auth0.java-jwt;version=snapshot, \
+    io.openems.wrapper.com.auth0.jwks-rsa;version=snapshot,\
 	io.openems.wrapper.aXMLRPC;version=snapshot,\
 	io.openems.wrapper.fastexcel;version=snapshot,\
 	io.openems.wrapper.gson;version=snapshot,\
@@ -110,6 +114,9 @@
 	org.apache.felix.scr;version='[2.2.6,2.2.7)',\
 	org.apache.felix.webconsole;version='[4.7.2,4.7.3)',\
 	org.apache.felix.webconsole.plugins.ds;version='[2.2.0,2.2.1)',\
+	com.fasterxml.jackson.core.jackson-core;version='[2.14.2,2.14.3)',\
+	com.fasterxml.jackson.core.jackson-annotations;version='[2.14.2,2.14.3)',\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.14.2,2.14.3)',\
 	org.jetbrains.kotlin.osgi-bundle;version='[1.8.20,1.8.21)',\
 	org.jsr-305;version='[3.0.2,3.0.3)',\
 	org.ops4j.pax.logging.pax-logging-api;version='[2.2.1,2.2.2)',\
