@@ -5,8 +5,10 @@ import com.auth0.jwk.JwkException;
 import com.auth0.jwk.JwkProvider;
 import com.auth0.jwk.UrlJwkProvider;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.JsonObject;
 import io.openems.backend.common.metadata.AbstractMetadata;
@@ -131,14 +133,23 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
     }
   }
 
-  public Map.Entry<Optional<Role>, NavigableMap<String, Role>> processJwt(String token) {
+  public Map.Entry<Optional<Role>, NavigableMap<String, Role>> processJwt(String token) throws OpenemsNamedException {
     try {
       DecodedJWT jwt = JWT.decode(token);
+
+      // Get pub key for signature verification from JWK endpoint
       JwkProvider provider =
           new UrlJwkProvider(new URL("http://localhost:8080/realms/voltstorage-customers/protocol/openid-connect/certs"));
       Jwk jwk = provider.get(jwt.getKeyId());
       Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
-      algorithm.verify(jwt);
+
+      //Verify the token; esp regarding expiry date, valid certs from JWK etc.
+      JWTVerifier verifier = JWT
+          .require(algorithm)
+          .build();
+      verifier.verify(jwt);
+
+      //Extract claims
       List<String> groups = jwt.getClaim("groups").asList(String.class);
       ArrayList<String> rolesClaim = (ArrayList<String>) (jwt.getClaim("realm_access").asMap()).get("roles");
 
@@ -153,16 +164,17 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
       }).forEach(entry -> roles.put(entry.getKey(), entry.getValue()));
 
       return new AbstractMap.SimpleEntry<>(globalRole, roles);
-    } catch (JWTVerificationException exception) {
-      // Invalid signature/claims
+    } catch (TokenExpiredException exception) {
+      throw OpenemsError.COMMON_AUTHENTICATION_FAILED.exception();
+    } catch (JWTVerificationException | JwkException | MalformedURLException exception) {
       throw new RuntimeException(exception);
-    } catch (JwkException | MalformedURLException e) {
-      throw new RuntimeException(e);
     }
   }
 
   @Override
   public User authenticate(String token) throws OpenemsNamedException {
+    // FIXME: Once the websocket connection is authenticated, it will stay authenticated forever;
+    // even is the access token expires in the the meantime; authentication is never rechecked on requests!
     this.logInfo(this.log, "Authenticate with token" + token); //FIXME do not log tokens
 
     //If invalid
@@ -170,8 +182,9 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
       throw OpenemsError.COMMON_AUTHENTICATION_FAILED.exception();
     }
 
-    //If valid check if already exists
+    //If already exists
     for (User user : this.users.values()) {
+      //FIXME With every expired accessToken a new user object will be added to the map
       if (user.getToken().equals(token)) {
         return user;
       }
@@ -270,7 +283,19 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
 
   @Override
   public Role getRoleForEdge(User user, String edgeId) throws OpenemsNamedException {
-    throw new OpenemsException("getRoleForEdge is not implemented");
+    Optional<User> verifiedUser = Optional.ofNullable(this.users.get(user.getId()));
+
+    if (verifiedUser.isEmpty()) {
+      throw OpenemsError.COMMON_USER_UNDEFINED.exception(user.getId());
+    }
+
+    Optional<Role> role = Optional.ofNullable(verifiedUser.get().getEdgeRoles().get(edgeId));
+
+    if (role.isEmpty()) {
+      throw OpenemsError.COMMON_ROLE_ACCESS_DENIED.exception(edgeId, "no valid role found");
+    }
+
+    return role.get();
   }
 
   @Override
