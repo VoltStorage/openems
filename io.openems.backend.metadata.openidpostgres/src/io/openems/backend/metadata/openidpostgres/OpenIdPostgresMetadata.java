@@ -218,7 +218,15 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
 
   @Override
   public Optional<String> getEdgeIdForApikey(String apikey) {
-    throw new UnsupportedOperationException("getEdgeIdForApikey is not implemented");
+    //FIXME: Dummy implementation apiKey == edgeId
+
+    Optional<Edge> foundEdge = Optional.ofNullable(this.edges.get(apikey));
+
+    if (foundEdge.isEmpty()) {
+      return Optional.empty();
+    }
+
+    return Optional.ofNullable(foundEdge.get().getId());
   }
 
   @Override
