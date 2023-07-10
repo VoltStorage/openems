@@ -41,6 +41,7 @@ import java.time.ZonedDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -273,10 +274,9 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
   }
 
   @Override
-  public Map<String, Role> getPageDevice(
-      User user,
-      PaginationOptions paginationOptions) throws OpenemsNamedException {
-    throw new OpenemsException("getPageDevice is not implemented");
+  public Map<String, Role> getPageDevice(User user, PaginationOptions paginationOptions) {
+    Optional<User> verifiedUser = Optional.ofNullable(this.users.get(user.getId()));
+    return verifiedUser.isEmpty() ? new HashMap<>() : verifiedUser.get().getEdgeRoles();
   }
 
   @Override
