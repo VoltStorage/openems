@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import localDE from '@angular/common/locales/de';
-import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
+import {APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
@@ -31,6 +31,22 @@ import { StatusSingleComponent } from './shared/status/single/status.component';
 import { registerTranslateExtension } from './shared/translate.extension';
 import { Language, MyTranslateLoader } from './shared/type/language';
 import { UserModule } from './user/user.module';
+import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
+import {OpenIdModule} from "./openid/openid.module";
+
+function initializeKeycloak(keycloak: KeycloakService) {
+  return () =>
+    keycloak.init({
+      config: {
+        url: 'http://localhost:8080',
+        realm: 'voltstorage-customers',
+        clientId: 'openems'
+      },
+      initOptions: {
+        checkLoginIframe: false
+      }
+    });
+}
 
 @NgModule({
   declarations: [
@@ -54,7 +70,9 @@ import { UserModule } from './user/user.module';
     EdgeSettingsModule,
     IndexModule,
     IonicModule.forRoot(),
+    KeycloakAngularModule,
     HttpClientModule,
+    OpenIdModule,
     SharedModule,
     TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: MyTranslateLoader } }),
     UserModule,
@@ -69,7 +87,13 @@ import { UserModule } from './user/user.module';
     // Use factory for formly. This allows us to use translations in validationMessages.
     { provide: FORMLY_CONFIG, multi: true, useFactory: registerTranslateExtension, deps: [TranslateService] },
     Pagination,
-    CheckForUpdateService
+    CheckForUpdateService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService]
+    }
   ],
   bootstrap: [AppComponent],
 })

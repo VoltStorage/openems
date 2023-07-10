@@ -41,10 +41,13 @@ import { UserComponent } from './user/user.component';
 import { EdgeComponent } from './edge/edge.component';
 import { HistoryParentComponent } from './edge/history/historyparent.component';
 import { ChangelogViewComponent } from './changelog/view/view';
+import {OpenIdComponent} from "./openid/openid.component";
 
 const routes: Routes = [
   { path: '', redirectTo: 'index', pathMatch: 'full' },
   { path: 'index', component: IndexComponent },
+
+  { path: 'openid-return', component: OpenIdComponent },
 
   { path: 'user', component: UserComponent },
   { path: 'changelog', component: ChangelogViewComponent },
