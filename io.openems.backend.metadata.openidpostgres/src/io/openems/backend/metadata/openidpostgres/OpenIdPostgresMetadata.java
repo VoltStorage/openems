@@ -82,6 +82,9 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
 
     Edge chiemseeEdge = new Edge(this, "100700012", "Schönwälder Chiemsee", "", "", ZonedDateTime.now());
     edges.put(chiemseeEdge.getId(), chiemseeEdge);
+
+    Edge tuerkenfeldEdge = new Edge(this, "100700006", "Kaller Türkenfeld", "", "", ZonedDateTime.now());
+    edges.put(tuerkenfeldEdge.getId(), tuerkenfeldEdge);
   }
 
   @Activate
