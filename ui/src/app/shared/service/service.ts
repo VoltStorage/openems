@@ -23,6 +23,7 @@ import { AbstractService } from './abstractservice';
 import { DefaultTypes } from './defaulttypes';
 import { Websocket } from './websocket';
 import {KeycloakService} from "keycloak-angular";
+import {AuthService} from "@auth0/auth0-angular";
 
 @Injectable()
 export class Service extends AbstractService {
@@ -73,7 +74,8 @@ export class Service extends AbstractService {
     private toaster: ToastController,
     public modalCtrl: ModalController,
     public translate: TranslateService,
-    private keycloakService: KeycloakService
+    private keycloakService: KeycloakService,
+    private auth0Service: AuthService
   ) {
     super();
     // add language
@@ -178,9 +180,9 @@ export class Service extends AbstractService {
   public onLogout() {
     this.currentEdge.next(null);
     this.metadata.next(null);
-    this.keycloakService.login({
+    environment.authProvider === "keycloak" ? this.keycloakService.login({
       redirectUri: window.location.origin + '/openid-return'
-    }).then();
+    }).then() : this.auth0Service.loginWithRedirect();
   }
 
   public getChannelAddresses(edge: Edge, channels: ChannelAddress[]): Promise<ChannelAddress[]> {

@@ -22,7 +22,8 @@ import { Pagination } from './pagination';
 import { Service } from './service';
 import { WebsocketInterface } from './websocketInterface';
 import { WsData } from './wsdata';
-import {KeycloakService} from "keycloak-angular";
+import { KeycloakService } from "keycloak-angular";
+import {AuthService} from "@auth0/auth0-angular";
 
 @Injectable()
 export class Websocket implements WebsocketInterface {
@@ -46,7 +47,8 @@ export class Websocket implements WebsocketInterface {
     private cookieService: CookieService,
     private router: Router,
     private pagination: Pagination,
-    private keycloakService: KeycloakService
+    private keycloakService: KeycloakService,
+    private auth0Service: AuthService
   ) {
     service.websocket = this;
 
@@ -85,15 +87,39 @@ export class Websocket implements WebsocketInterface {
           if (token) {
             // Login with Session Token
             console.info("Token found");
-            this.login(new AuthenticateWithTokenRequest({ token: token }))
+            this.login(new AuthenticateWithTokenRequest({ token: token })).then()
             this.status = 'authenticating';
           } else {
             // No Token -> directly ask for Login credentials
             console.info("Token NOT found; initiating login");
             this.status = 'waiting for credentials';
-            this.keycloakService.login({
+
+            //FIXME implemented exponential backoff if authorization fails continuously
+            environment.authProvider === "keycloak" ? this.keycloakService.login({
               redirectUri: window.location.origin + '/openid-return'
-            }).then();
+            }).then() : this.auth0Service.isAuthenticated$.subscribe(isAuthenticated => {
+              if(isAuthenticated) {
+                this.auth0Service.getAccessTokenSilently().subscribe(accessToken => {
+                  if (accessToken) {
+                    console.info("Auth0 in websocket: accessToken retrieval successful", accessToken)
+                    this.cookieService.set("token", accessToken);
+                    this.login(new AuthenticateWithTokenRequest({ token: accessToken })).then()
+                    this.status = 'authenticating';
+                  } else {
+                    console.info("Auth0 in websocket: Failed to retrieve an token")
+                    this.status = 'waiting for credentials';
+                    this.cookieService.delete("token");
+                    this.auth0Service.loginWithRedirect();
+                  }
+                });
+              } else {
+                console.info("Auth0 in websocket: Unauthenticated")
+                this.status = 'waiting for credentials';
+                this.cookieService.delete("token");
+                this.auth0Service.loginWithRedirect();
+              }
+            });
+
           }
         }
       },

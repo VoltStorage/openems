@@ -9,5 +9,7 @@ export const environment: Environment = {
 
         production: false,
         debugMode: true,
+
+        authProvider: "auth0"
     }
 };

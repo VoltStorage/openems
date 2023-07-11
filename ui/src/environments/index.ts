@@ -16,6 +16,8 @@ export interface Environment {
     readonly production: boolean;
     debugMode: boolean;
 
+    readonly authProvider?: string;
+
     readonly docsUrlPrefix: string;
     readonly links: {
         readonly COMMON_STORAGE: string,
