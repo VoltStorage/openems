@@ -1,3 +1,4 @@
+### Keycloak
 WEBSOCKET ws://localhost:8082/
 Content-Type: application/json // used only for IDE highlighting.
 
@@ -10,4 +11,15 @@ Content-Type: application/json // used only for IDE highlighting.
   }
 }
 
-###
+### Auth0
+WEBSOCKET ws://localhost:8082/
+Content-Type: application/json // used only for IDE highlighting.
+
+{
+  "jsonrpc": "2.0",
+  "id": "49609d0e-19a1-4137-b081-3000f9e20be1",
+  "method": "authenticateWithToken",
+  "params": {
+    "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InpOSTlnRkNpVGEtanJaUkVFdV9LSSJ9.eyJpc3MiOiJodHRwczovL2Rldi1kcmlwYm1sbnoyeGg2MGs4LmV1LmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw2NGFjMWQwMmQ5N2YwMmE1MTVmOGZjMWIiLCJhdWQiOlsiaHR0cHM6Ly9vcGVuZW1zLnZvbHQuY2xvdWQiLCJodHRwczovL2Rldi1kcmlwYm1sbnoyeGg2MGs4LmV1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2ODkwNzM3NDgsImV4cCI6MTY4OTE2MDE0OCwiYXpwIjoia2FVUHJFVURDOTNuZlJvaUxvYXd3NjJSeFlIZkk2R2EiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwicGVybWlzc2lvbnMiOlsiYWRtaW46MTAwNzAwMDA2IiwiaW5zdGFsbDoxMDA3MDAwMTIiXX0.kx5BuDQAMmaGv16Mo75qVdpumlbQJ8phTubik1YlnSUtFimTPieYcGRAwfR8XbEzkOBxhaAtqkvU-cuUH2dGdKiO0dYLe5r0fWyQfpt_vqgGsMkahLyYTQQy8Nvevq0O1cAbM0wNsd8JaMm8eNH4_E954mhLZiWOwcZY5SnvTw2WslyxcWc1tAMgn_Cqpm5RVsGe_DrSKHVtjssrduN98ZOcyNm8D1uNGIVxbWP9eomr7aEsps4zgLDSDG8hG6n_eB2VdEDcwU4d3AoAyurQr2iHSW4u-vpgOXxrnbeZWdaQ6BTjvhIjEQi0HtBKm6P5CfRQgHoHovksRrb8ar7BYA"
+  }
+}
