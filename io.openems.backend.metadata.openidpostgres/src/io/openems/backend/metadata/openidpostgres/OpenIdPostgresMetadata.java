@@ -102,7 +102,6 @@ public class OpenIdPostgresMetadata extends AbstractMetadata implements Metadata
     // e.g. the UiWebsocket is not constructed as long as there is no Metadata object
     // Also the UiWebsocket gets destroyed if the Metadata object gets destroyed
     this.executor.schedule(this::setInitialized, 10, TimeUnit.SECONDS);
-    this.setInitialized();
   }
 
   @Deactivate
