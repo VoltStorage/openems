@@ -1,5 +1,5 @@
 import {registerLocaleData} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import localDE from '@angular/common/locales/de';
 import {APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
@@ -34,6 +34,8 @@ import {UserModule} from './user/user.module';
 import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 import {OpenIdModule} from "./openid/openid.module";
 import {AuthModule} from "@auth0/auth0-angular";
+import {MsalGuard, MsalInterceptor, MsalModule, MsalRedirectComponent} from "@azure/msal-angular";
+import {BrowserCacheLocation, InteractionType, PublicClientApplication} from "@azure/msal-browser";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -80,6 +82,30 @@ function initializeKeycloak(keycloak: KeycloakService) {
       }
     }),
     KeycloakAngularModule,
+    MsalModule.forRoot(new PublicClientApplication({ // MSAL Configuration
+        auth: {
+          clientId: "df992576-2b9d-426c-9bc1-57fe38d89bfe",
+          authority: "https://login.microsoftonline.com/98a6ce36-4cc1-4d96-9c32-db7635ed21a3",
+          redirectUri: "http://localhost:4200/openid-return",
+        },
+        cache: {
+          cacheLocation: BrowserCacheLocation.SessionStorage,
+          storeAuthStateInCookie: false, // set to true for IE 11
+        },
+        system: {
+          loggerOptions: {
+            loggerCallback: () => {
+            },
+            piiLoggingEnabled: false
+          }
+        }
+      }), {
+        interactionType: InteractionType.Popup
+      },
+      {
+        interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
+        protectedResourceMap: new Map()
+      }),
     HttpClientModule,
     OpenIdModule,
     SharedModule,
@@ -102,9 +128,15 @@ function initializeKeycloak(keycloak: KeycloakService) {
       useFactory: initializeKeycloak,
       multi: true,
       deps: [KeycloakService]
-    }
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
+      multi: true
+    },
+    MsalGuard
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, MsalRedirectComponent],
 })
 export class AppModule {
   constructor() {

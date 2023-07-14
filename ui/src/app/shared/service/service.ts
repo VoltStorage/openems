@@ -1,27 +1,27 @@
-import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ModalController, ToastController } from '@ionic/angular';
-import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
-import { NgxSpinnerService } from 'ngx-spinner';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, first, take } from 'rxjs/operators';
-import { environment } from 'src/environments';
-import { Edge } from '../edge/edge';
-import { EdgeConfig } from '../edge/edgeconfig';
-import { JsonrpcResponseError } from '../jsonrpc/base';
-import { GetEdgeRequest } from '../jsonrpc/request/getEdgeRequest';
-import { GetEdgesRequest } from '../jsonrpc/request/getEdgesRequest';
-import { QueryHistoricTimeseriesEnergyRequest } from '../jsonrpc/request/queryHistoricTimeseriesEnergyRequest';
-import { GetEdgeResponse } from '../jsonrpc/response/getEdgeResponse';
-import { GetEdgesResponse } from '../jsonrpc/response/getEdgesResponse';
-import { QueryHistoricTimeseriesEnergyResponse } from '../jsonrpc/response/queryHistoricTimeseriesEnergyResponse';
-import { User } from '../jsonrpc/shared';
-import { ChannelAddress } from '../shared';
-import { Language } from '../type/language';
-import { Role } from '../type/role';
-import { AbstractService } from './abstractservice';
-import { DefaultTypes } from './defaulttypes';
-import { Websocket } from './websocket';
+import {Injectable} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ModalController, ToastController} from '@ionic/angular';
+import {LangChangeEvent, TranslateService} from '@ngx-translate/core';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {filter, first, take} from 'rxjs/operators';
+import {environment} from 'src/environments';
+import {Edge} from '../edge/edge';
+import {EdgeConfig} from '../edge/edgeconfig';
+import {JsonrpcResponseError} from '../jsonrpc/base';
+import {GetEdgeRequest} from '../jsonrpc/request/getEdgeRequest';
+import {GetEdgesRequest} from '../jsonrpc/request/getEdgesRequest';
+import {QueryHistoricTimeseriesEnergyRequest} from '../jsonrpc/request/queryHistoricTimeseriesEnergyRequest';
+import {GetEdgeResponse} from '../jsonrpc/response/getEdgeResponse';
+import {GetEdgesResponse} from '../jsonrpc/response/getEdgesResponse';
+import {QueryHistoricTimeseriesEnergyResponse} from '../jsonrpc/response/queryHistoricTimeseriesEnergyResponse';
+import {User} from '../jsonrpc/shared';
+import {ChannelAddress} from '../shared';
+import {Language} from '../type/language';
+import {Role} from '../type/role';
+import {AbstractService} from './abstractservice';
+import {DefaultTypes} from './defaulttypes';
+import {Websocket} from './websocket';
 import {KeycloakService} from "keycloak-angular";
 import {AuthService} from "@auth0/auth0-angular";
 
@@ -180,9 +180,18 @@ export class Service extends AbstractService {
   public onLogout() {
     this.currentEdge.next(null);
     this.metadata.next(null);
-    environment.authProvider === "keycloak" ? this.keycloakService.login({
-      redirectUri: window.location.origin + '/openid-return'
-    }).then() : this.auth0Service.loginWithRedirect();
+
+    if (environment.authProvider === "keycloak") {
+      this.keycloakService.login({redirectUri: window.location.origin + '/openid-return'}).then()
+    }
+
+    if (environment.authProvider === "auth0") {
+      this.auth0Service.loginWithRedirect();
+    }
+
+    if (environment.authProvider === "entra") {
+
+    }
   }
 
   public getChannelAddresses(edge: Edge, channels: ChannelAddress[]): Promise<ChannelAddress[]> {
@@ -195,13 +204,13 @@ export class Service extends AbstractService {
     // keep only the date, without time
     fromDate.setHours(0, 0, 0, 0);
     toDate.setHours(0, 0, 0, 0);
-    let promise = { resolve: null, reject: null };
+    let promise = {resolve: null, reject: null};
     let response = new Promise<QueryHistoricTimeseriesEnergyResponse>((resolve, reject) => {
       promise.resolve = resolve;
       promise.reject = reject;
     });
     this.queryEnergyQueue.push(
-      { fromDate: fromDate, toDate: toDate, channels: channels, promises: [promise] }
+      {fromDate: fromDate, toDate: toDate, channels: channels, promises: [promise]}
     );
     // try to merge requests within 100 ms
     if (this.queryEnergyTimeout == null) {
@@ -257,7 +266,7 @@ export class Service extends AbstractService {
                 }
               } else {
                 for (let promise of source.promises) {
-                  promise.reject(new JsonrpcResponseError(response.id, { code: 0, message: "Result was empty" }));
+                  promise.reject(new JsonrpcResponseError(response.id, {code: 0, message: "Result was empty"}));
                 }
               }
             }).catch(reason => {
@@ -285,34 +294,34 @@ export class Service extends AbstractService {
       this.websocket.sendSafeRequest(
         new GetEdgesRequest({
           page: page,
-          ...(query && query != "" && { query: query }),
-          ...(limit && { limit: limit })
+          ...(query && query != "" && {query: query}),
+          ...(limit && {limit: limit})
         })).then((response) => {
 
-          const result = (response as GetEdgesResponse).result;
+        const result = (response as GetEdgesResponse).result;
 
-          // TODO change edges-map to array or other way around
-          let value = this.metadata.value;
-          let mappedResult = [];
-          for (let edge of result.edges) {
-            let mappedEdge = new Edge(
-              edge.id,
-              edge.comment,
-              edge.producttype,
-              ("version" in edge) ? edge["version"] : "0.0.0",
-              Role.getRole(edge.role.toString()),
-              edge.isOnline,
-              edge.lastmessage
-            );
-            value.edges[edge.id] = mappedEdge
-            mappedResult.push(mappedEdge)
-          }
+        // TODO change edges-map to array or other way around
+        let value = this.metadata.value;
+        let mappedResult = [];
+        for (let edge of result.edges) {
+          let mappedEdge = new Edge(
+            edge.id,
+            edge.comment,
+            edge.producttype,
+            ("version" in edge) ? edge["version"] : "0.0.0",
+            Role.getRole(edge.role.toString()),
+            edge.isOnline,
+            edge.lastmessage
+          );
+          value.edges[edge.id] = mappedEdge
+          mappedResult.push(mappedEdge)
+        }
 
-          this.metadata.next(value)
-          resolve(mappedResult)
-        }).catch((err) => {
-          reject(err)
-        })
+        this.metadata.next(value)
+        resolve(mappedResult)
+      }).catch((err) => {
+        reject(err)
+      })
     })
   }
 
@@ -330,7 +339,7 @@ export class Service extends AbstractService {
         resolve(existingEdge);
         return;
       }
-      this.websocket.sendSafeRequest(new GetEdgeRequest({ edgeId: edgeId })).then((response) => {
+      this.websocket.sendSafeRequest(new GetEdgeRequest({edgeId: edgeId})).then((response) => {
         let edgeData = (response as GetEdgeResponse).result.edge
         let value = this.metadata.value;
         const currentEdge = new Edge(

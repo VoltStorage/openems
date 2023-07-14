@@ -95,30 +95,38 @@ export class Websocket implements WebsocketInterface {
             this.status = 'waiting for credentials';
 
             //FIXME implemented exponential backoff if authorization fails continuously
-            environment.authProvider === "keycloak" ? this.keycloakService.login({
-              redirectUri: window.location.origin + '/openid-return'
-            }).then() : this.auth0Service.isAuthenticated$.subscribe(isAuthenticated => {
-              if(isAuthenticated) {
-                this.auth0Service.getAccessTokenSilently().subscribe(accessToken => {
-                  if (accessToken) {
-                    console.info("Auth0 in websocket: accessToken retrieval successful", accessToken)
-                    this.cookieService.set("token", accessToken);
-                    this.login(new AuthenticateWithTokenRequest({ token: accessToken })).then()
-                    this.status = 'authenticating';
-                  } else {
-                    console.info("Auth0 in websocket: Failed to retrieve an token")
-                    this.status = 'waiting for credentials';
-                    this.cookieService.delete("token");
-                    this.auth0Service.loginWithRedirect();
-                  }
-                });
-              } else {
-                console.info("Auth0 in websocket: Unauthenticated")
-                this.status = 'waiting for credentials';
-                this.cookieService.delete("token");
-                this.auth0Service.loginWithRedirect();
-              }
-            });
+            if(environment.authProvider === "keycloak") {
+              this.keycloakService.login({redirectUri: window.location.origin + '/openid-return'}).then()
+            }
+
+            if(environment.authProvider === "auth0"){
+              this.auth0Service.isAuthenticated$.subscribe(isAuthenticated => {
+                if(isAuthenticated) {
+                  this.auth0Service.getAccessTokenSilently().subscribe(accessToken => {
+                    if (accessToken) {
+                      console.info("Auth0 in websocket: accessToken retrieval successful", accessToken)
+                      this.cookieService.set("token", accessToken);
+                      this.login(new AuthenticateWithTokenRequest({ token: accessToken })).then()
+                      this.status = 'authenticating';
+                    } else {
+                      console.info("Auth0 in websocket: Failed to retrieve an token")
+                      this.status = 'waiting for credentials';
+                      this.cookieService.delete("token");
+                      this.auth0Service.loginWithRedirect();
+                    }
+                  });
+                } else {
+                  console.info("Auth0 in websocket: Unauthenticated")
+                  this.status = 'waiting for credentials';
+                  this.cookieService.delete("token");
+                  this.auth0Service.loginWithRedirect();
+                }
+              });
+            }
+
+            if(environment.authProvider === "entra") {
+              console.info("Using Entra to secure websocket")
+            }
 
           }
         }
